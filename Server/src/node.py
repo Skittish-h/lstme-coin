@@ -2,12 +2,12 @@ from flask import Flask
 from blockman import *
 import StringIO
 import json
+import time
 from flask import request
 node = Flask(__name__)
 
 # Store the transactions that
 # this node has in a list
-
 blockchain = [create_genesis_block()]
 previous_block = blockchain[0]
 
@@ -16,6 +16,9 @@ print blockchain[0]
 this_nodes_transactions = []
 @node.route('/blocks', methods=['GET'])
 def get_blocks():
+  start = time.time()
+  while((time.time() - start) < 60):
+    pass
   last_block = blockchain[len(blockchain) - 1]
   last_proof = last_block.data['proof-of-work']
   last_proof = str(last_proof)
