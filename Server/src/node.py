@@ -1,5 +1,6 @@
 from flask import Flask
 from blockman import *
+import StringIO
 import json
 from flask import request
 node = Flask(__name__)
@@ -15,25 +16,10 @@ print blockchain[0]
 this_nodes_transactions = []
 @node.route('/blocks', methods=['GET'])
 def get_blocks():
-  chain_to_send = blockchain
-  # Convert our blocks into dictionaries
-  z = []
-  # so we can send them as json objects later
-  for i in chain_to_send:
-    block = chain_to_send[0]
-    block_index = str(block.index)
-    block_timestamp = str(block.timestamp)
-    block_data = str(block.data)
-    block_hash = str(block.hash)
-    z[i] = {
-      "index": block_index,
-      "timestamp": block_timestamp,
-      "data": block_data,
-      "hash": block_hash
-    }
-  # Send our chain to whomever requested it
-  chain_to_send = json.dumps(chain_to_send)
-  return chain_to_send
+  last_block = blockchain[len(blockchain) - 1]
+  last_proof = last_block.data['proof-of-work']
+  last_proof = str(last_proof)
+  return last_proof
 
 def find_new_chains():
   # Get the blockchains of every
@@ -96,7 +82,7 @@ def proof_of_work(last_proof):
 def mine():
   if request.method == 'POST':
     new_txion = request.get_json()
-    miner = int(new_txion['miner'])
+    miner = str(new_txion['miner'])
     number = int(new_txion['number'])
     
     # Get the last proof of work
@@ -110,7 +96,7 @@ def mine():
         proof = number
         # we reward the miner by adding a transaction
         this_nodes_transactions.append(
-            { "from": "network", "to": miner_address, "amount": 1 }
+            { "from": "network", "to": miner, "amount": 1 }
         )
         # Now we can gather the data needed
         # to create the new block
@@ -133,13 +119,15 @@ def mine():
         )
         blockchain.append(mined_block)
         # Let the client know we mined a block
-        return json.dumps({
+        return "1" + json.dumps({
             "index": new_block_index,
             "timestamp": str(new_block_timestamp),
             "data": new_block_data,
             "hash": last_block_hash
-        }) + "\n"
+        }) +"\n" 
+    else:
+        return "0"
 
 
-node.run()
+node.run(debug=True,host='0.0.0.0')
 
