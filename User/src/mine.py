@@ -4,8 +4,8 @@ import communication
 
 
 #global vars
-url = "http://0.0.0.0:5000/blocks"
-mine_url = "http://0.0.0.0:5000/mine"
+url = "http://10.32.1.246:5000/blocks"
+mine_url = "http://10.32.1.246:5000/mine"
 walletKey = "m1y2e3x4a5m6p7l8e9w1a2l3e4t5t6k7e8y9"
 minedCoins = 0
 #TODO: comandline arguments? GUI?

@@ -6,6 +6,10 @@ import time
 from flask import request
 node = Flask(__name__)
 
+
+#start = time.time()
+
+
 # Store the transactions that
 # this node has in a list
 blockchain = [create_genesis_block()]
@@ -16,9 +20,11 @@ print blockchain[0]
 this_nodes_transactions = []
 @node.route('/blocks', methods=['GET'])
 def get_blocks():
-  start = time.time()
-  while((time.time() - start) < 60):
-    pass
+  
+  #while((time.time() - start) < 10):
+  #  pass
+  
+  
   last_block = blockchain[len(blockchain) - 1]
   last_proof = last_block.data['proof-of-work']
   last_proof = str(last_proof)
@@ -92,10 +98,11 @@ def mine():
     user = request.args.get('user')
     last_block = blockchain[len(blockchain) - 1]
     last_proof = last_block.data['proof-of-work']
-     
-    if(number > last_proof and number % 9 == 0 and number % last_proof == 0):
+    
+    if(number > last_proof and number % 9 == 0 and number % last_proof == 0 and last_proof != str(number)):
         # Once we find a valid proof of work,
         # we know we can mine a block so 
+        #blockmined = 1
         proof = number
         # we reward the miner by adding a transaction
         this_nodes_transactions.append(
